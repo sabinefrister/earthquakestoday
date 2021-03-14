@@ -1,6 +1,7 @@
 import React, { Component }  from 'react';
 import { Container, Alert, Carousel } from 'react-bootstrap';
 import getEarthquakeData from './getData'
+import BarChart from './BarChart';
 
 import './App.css';
 
@@ -67,17 +68,17 @@ class App extends Component {
 
 	categorizeViaRichterScala(magnitudeEvents) {
 		var categorizedRichterScala = {
-			0: {title: "Micro", count: 0,},
-			1: {title: "Micro", count: 0,},
-			2: {title: "Minor", count: 0,},
-			3: {title: "Minor", count: 0,},
-			4: {title: "Light", count: 0,},
-			5: {title: "Moderate", count: 0,},
-			6: {title: "Strong", count: 0,},
-			7: {title: "Major", count: 0,},
-			8: {title: "Great", count: 0,},
-			9: {title: "Extreme", count: 0,},
-			10: {title: "Global Catastrophe", count: 0,}
+			0: {title: "Micro", count: 0, magnitude: 0},
+			1: {title: "Micro", count: 0, magnitude: 1},
+			2: {title: "Minor", count: 0, magnitude: 2},
+			3: {title: "Minor", count: 0, magnitude: 3},
+			4: {title: "Light", count: 0, magnitude: 4},
+			5: {title: "Moderate", count: 0, magnitude: 5},
+			6: {title: "Strong", count: 0, magnitude: 6},
+			7: {title: "Major", count: 0, magnitude: 7},
+			8: {title: "Great", count: 0, magnitude: 8},
+			9: {title: "Extreme", count: 0, magnitude: 9},
+			10: {title: "Global Catastrophe", count: 0, magnitude: 10}
 		}
 
 		Object.keys(magnitudeEvents).forEach(function(magnitude) {
@@ -85,7 +86,7 @@ class App extends Component {
 				categorizedRichterScala[parseInt(magnitude)].count++
 			}
 		})
-		console.log(categorizedRichterScala)
+		return Object.values(categorizedRichterScala)
 	}
 
 	render() {
@@ -97,7 +98,7 @@ class App extends Component {
 			// get Data for the highest mag and highest felt
 			// var highestMagnitudeEarthquakes, highestFeltEarthquakes
 			var specialEventData = this.filterSpecialEventData()
-			var richterScala = this.categorizeViaRichterScala(specialEventData.magnitudeEvents)
+			var categorizedRichterScala = this.categorizeViaRichterScala(specialEventData.magnitudeEvents)
 		}
   	return (
 	    <div className="App">
@@ -147,8 +148,14 @@ class App extends Component {
 			      				<div>There have been {count} {specialEvent}s today.</div>
 			      			)
 			      		})}
+		      		<BarChart
+							  data={categorizedRichterScala}
+							  title="My amazing data"
+							  color="#70CAD1"
+							/>
 		      	</div>
         	}
+        	
 	      </Container>
 	    </div>
 	  );
