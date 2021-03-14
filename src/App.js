@@ -15,6 +15,7 @@ class App extends Component {
 		};
 		this.getLastEarthquakes = this.getLastEarthquakes.bind(this);
 		this.filterSpecialEventData = this.filterSpecialEventData.bind(this);
+		this.categorizeViaRichterScala = this.categorizeViaRichterScala.bind(this);
 
 	}
 	componentDidMount() {
@@ -64,6 +65,29 @@ class App extends Component {
 		return {highestThreeMagnitudes, highestThreeFelts, specialEvents, magnitudeEvents, feltEvents}
 	}
 
+	categorizeViaRichterScala(magnitudeEvents) {
+		var categorizedRichterScala = {
+			0: {title: "Micro", count: 0,},
+			1: {title: "Micro", count: 0,},
+			2: {title: "Minor", count: 0,},
+			3: {title: "Minor", count: 0,},
+			4: {title: "Light", count: 0,},
+			5: {title: "Moderate", count: 0,},
+			6: {title: "Strong", count: 0,},
+			7: {title: "Major", count: 0,},
+			8: {title: "Great", count: 0,},
+			9: {title: "Extreme", count: 0,},
+			10: {title: "Global Catastrophe", count: 0,}
+		}
+
+		Object.keys(magnitudeEvents).forEach(function(magnitude) {
+			if (magnitude) {
+				categorizedRichterScala[parseInt(magnitude)].count++
+			}
+		})
+		console.log(categorizedRichterScala)
+	}
+
 	render() {
 		if (!this.state.loading) {
 			// find a better place to put this
@@ -73,6 +97,7 @@ class App extends Component {
 			// get Data for the highest mag and highest felt
 			// var highestMagnitudeEarthquakes, highestFeltEarthquakes
 			var specialEventData = this.filterSpecialEventData()
+			var richterScala = this.categorizeViaRichterScala(specialEventData.magnitudeEvents)
 		}
   	return (
 	    <div className="App">
@@ -98,25 +123,26 @@ class App extends Component {
 		      		</div>
 			      	<h2>Heaviest 3 Earthquakes last 24 hours</h2>
 			      		{specialEventData.highestThreeMagnitudes.map(function(magnitude) {
-				      		let date = `${new Date(specialEventData.magnitudeEvents[magnitude][0].properties.time).toLocaleDateString("en-US")} ${new Date(specialEventData.magnitudeEvents[magnitude][0].properties.time).toLocaleTimeString("en-US")}`
+			      			let magnitudeEvents = specialEventData.magnitudeEvents
+				      		let date = `${new Date(magnitudeEvents[magnitude][0].properties.time).toLocaleDateString("en-US")} ${new Date(magnitudeEvents[magnitude][0].properties.time).toLocaleTimeString("en-US")}`
 				      		return (
-					      		<div>Magnitude: {specialEventData.magnitudeEvents[magnitude][0].properties.mag}, Felt: {specialEventData.magnitudeEvents[magnitude][0].properties.felt ? specialEventData.magnitudeEvents[magnitude][0].properties.felt : "nothing"},
-					      		Where: {specialEventData.magnitudeEvents[magnitude][0].properties.place}, Time: {date}, 
-					      		Type: {specialEventData.magnitudeEvents[magnitude][0].properties.type}</div>)
+					      		<div>Magnitude: {magnitudeEvents[magnitude][0].properties.mag}, Felt: {magnitudeEvents[magnitude][0].properties.felt ? magnitudeEvents[magnitude][0].properties.felt : "nothing"},
+					      		Where: {magnitudeEvents[magnitude][0].properties.place}, Time: {date}, 
+					      		Type: {magnitudeEvents[magnitude][0].properties.type}</div>)
 			      		})}
 			      	<h2>Most felt 3 Earthquakes last 24 hours</h2>
 			      		{specialEventData.highestThreeFelts.map(function(felt) {
-				      		let date = `${new Date(specialEventData.feltEvents[felt][0].properties.time).toLocaleDateString("en-US")} ${new Date(specialEventData.feltEvents[felt][0].properties.time).toLocaleTimeString("en-US")}`
+			      			let feltEvents = specialEventData.feltEvents
+				      		let date = `${new Date(feltEvents[felt][0].properties.time).toLocaleDateString("en-US")} ${new Date(feltEvents[felt][0].properties.time).toLocaleTimeString("en-US")}`
 				      		return (
-					      		<div>Magnitude: {specialEventData.feltEvents[felt][0].properties.mag}, Felt: {specialEventData.feltEvents[felt][0].properties.felt},
-					      		Where: {specialEventData.feltEvents[felt][0].properties.place}, Time: {date}, 
-					      		Type: {specialEventData.feltEvents[felt][0].properties.type}</div>)
+					      		<div>Magnitude: {feltEvents[felt][0].properties.mag}, Felt: {feltEvents[felt][0].properties.felt},
+					      		Where: {feltEvents[felt][0].properties.place}, Time: {date}, 
+					      		Type: {feltEvents[felt][0].properties.type}</div>)
 			      		})}
 			      	<h2>Something special going on today?</h2>
 			      		{Object.keys(specialEventData.specialEvents).map(function(specialEvent) {
-			      			console.log(specialEvent)
-			      			console.log(specialEventData.specialEvents[specialEvent], specialEventData.specialEvents)
-			      			let count = specialEventData.specialEvents[specialEvent].length
+			      			let specialEvents = specialEventData.specialEvents
+			      			let count = specialEvents[specialEvent].length
 			      			return (
 			      				<div>There have been {count} {specialEvent}s today.</div>
 			      			)
