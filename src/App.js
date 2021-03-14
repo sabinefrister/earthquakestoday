@@ -14,6 +14,7 @@ class App extends Component {
 			alertMessage: "", 
 		};
 		this.getLastEarthquakes = this.getLastEarthquakes.bind(this);
+		this.getSpecialEventData = this.getSpecialEventData.bind(this);
 
 	}
 	componentDidMount() {
@@ -26,11 +27,33 @@ class App extends Component {
 		return this.state.earthquakeData.features.slice(-3);
 	}
 
+	getSpecialEventData() {
+		// look for mag, felt, special types and save them to a list
+		// special - all
+		// highest mag and felt only three highest -> save the mag and pop the last ones
+		let specialEvents = {};
+		this.state.earthquakeData.features.forEach(function(element) {
+			const notSpecialEvents = ["quarry", "eq", "earthquake", "other", "other_event", "other event"]
+			if (!notSpecialEvents.includes(element.properties.type)) {
+				if (!specialEvents[element.properties.type]) {
+					specialEvents[element.properties.type] = [element]
+				} else {
+					specialEvents[element.properties.type].push(element)
+				}
+			}
+		})
+		console.log(specialEvents)
+	}
+
 	render() {
 		if (!this.state.loading) {
+			// find a better place to put this
 			var earthquakeData = this.state.earthquakeData;
 			// get Data for last 3 earthquakes
 			var lastEarthquakes = this.getLastEarthquakes()
+			// get Data for the highest mag and highest felt
+			// var highestMagnitudeEarthquakes, highestFeltEarthquakes
+			this.getSpecialEventData()
 		}
 		console.log(this.state.earthquakeData)
 		console.log("this.state.earthquakeData")
