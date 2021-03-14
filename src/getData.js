@@ -1,9 +1,5 @@
 import fetchJsonp from 'fetch-jsonp';
 
-// const herokuURL = "https://";
-// let url;
-// process.env.NODE_ENV === "production" ? url = herokuURL : url = "";
-
 const url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojsonp"
 
 async function getEarthquakeData() {
