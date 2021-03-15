@@ -15,17 +15,30 @@ class App extends Component {
 			loading: true, 
 			showAlert: false,
 			alertMessage: "", 
+			latestRefreshDate: ""
 		};
+		this.getData = this.getData.bind(this);
 		this.getLastEarthquakes = this.getLastEarthquakes.bind(this);
 		this.filterSpecialEventData = this.filterSpecialEventData.bind(this);
 		this.categorizeViaRichterScala = this.categorizeViaRichterScala.bind(this);
 		this.checkForUndefinedValues = this.checkForUndefinedValues.bind(this);
 	}
 
-	componentDidMount() {
+	getData() {
+		let latestRefreshDate = new Date().toUTCString()
+
+		console.log(latestRefreshDate)
 		getEarthquakeData()
-    .then(response => this.setState({earthquakeData: response, loading: false})) 
+    .then(response => this.setState({earthquakeData: response, loading: false, 
+    	latestRefreshDate: latestRefreshDate})) 
     .catch(error => this.setState({showAlert: true, alertMessage: error}))
+	}
+
+	componentDidMount() {
+		this.getData()
+
+    // refresh data every minute
+    this.interval = setInterval(this.getData, 60000)
 	}
 
 	getLastEarthquakes() {
@@ -136,14 +149,15 @@ class App extends Component {
 					        <p>There have been <b>{earthquakeData.metadata.count}</b> recognized earthquakes 
 					        for the last 24 hours. Data is provided by <a 
 					       	href="https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php">www.usgs.gov</a>.</p>
+					       	<p>It has been updated at {this.state.latestRefreshDate}</p>
 			        	</Jumbotron> 
 			        	<Jumbotron className="last-earthquakes">
 					      	<h2>Last 3 Earthquakes</h2>
 					      	<Container>
 			        			<Row>
 							      	{lastEarthquakes.map(function(earthquakeElement) {
-							      		let earthquake = earthquakeElement.properties
-							      		let date = `${new Date(earthquake.time).toLocaleDateString("en-US")} ${new Date(earthquake.time).toLocaleTimeString("en-US")}`
+							      		let earthquake = earthquakeElement.properties;
+							      		let date = new Date(earthquake.time).toUTCString();
 							      		return (
 							      			<DisplayCard 
 							      				mag={earthquake.mag.toFixed(2)}
@@ -171,8 +185,8 @@ class App extends Component {
 					      	<Container>
 			        			<Row>
 							      	{specialEventData.highestThreeMagnitudes.map(function(magnitudeElement) {
-							      		let magnitude = magnitudeElement.properties
-							      		let date = `${new Date(magnitude.time).toLocaleDateString("en-US")} ${new Date(magnitude.time).toLocaleTimeString("en-US")}`
+							      		let magnitude = magnitudeElement.properties;
+							      		let date = new Date(magnitude.time).toUTCString();
 							      		return (
 							      			<DisplayCard 
 							      				mag={magnitude.mag.toFixed(2)}
@@ -191,8 +205,8 @@ class App extends Component {
 					      	<Container>
 			        			<Row>
 							      	{specialEventData.highestThreeFelts.map(function(feltElement) {
-						      			let felt = feltElement.properties
-							      		let date = `${new Date(felt.time).toLocaleDateString("en-US")} ${new Date(felt.time).toLocaleTimeString("en-US")}`
+						      			let felt = feltElement.properties;
+							      		let date = new Date(felt.time).toUTCString();
 							      		return (
 							      			<DisplayCard 
 							      				mag={felt.mag.toFixed(2)}
