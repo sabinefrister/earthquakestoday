@@ -133,8 +133,9 @@ class App extends Component {
 		      		<div>
 			      		<Jumbotron className="total">
 					      	<h2>Total</h2>
-					        <p>There have been {earthquakeData.metadata.count} recognized earthquakes 
-					        for the last 24 hours.</p>
+					        <p>There have been <b>{earthquakeData.metadata.count}</b> recognized earthquakes 
+					        for the last 24 hours. Data is provided by <a 
+					       	href="https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php">www.usgs.gov</a>.</p>
 			        	</Jumbotron> 
 			        	<Jumbotron className="last-earthquakes">
 					      	<h2>Last 3 Earthquakes</h2>
@@ -211,7 +212,7 @@ class App extends Component {
 				      			let specialTypes = specialEventData.specialTypes
 				      			let count = specialTypes[specialEvent].length
 				      			return (
-				      				<div>There have been {count} {specialEvent}s today.</div>
+				      				<div>There have been <b>{count}</b> {specialEvent}s today.</div>
 				      			)
 				      		})}
 			      		</Jumbotron>
