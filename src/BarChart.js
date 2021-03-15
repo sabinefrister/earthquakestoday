@@ -24,14 +24,14 @@ class BarChart extends React.Component {
             {
               ticks: {
                 min: 0,
-                max: 100
+                max: parseInt(this.props.maxTicks)
               }
             }
           ]
         }
       },
       data: {
-        labels: this.props.data.map(d => d.magnitude),
+        labels: this.props.data.map(d => `${d.magnitude} - ${d.title}`),
         datasets: [{
           label: this.props.title,
           data: this.props.data.map(d => d.count),
@@ -47,6 +47,5 @@ class BarChart extends React.Component {
     );
   }
 }
-
 
 export default BarChart;

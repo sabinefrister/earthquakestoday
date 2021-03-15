@@ -1,7 +1,12 @@
-/*body {
-	background-color: black !important;
-	color: white;
-}*/
+body {
+	/*background-color: black !important;
+	color: white;*/
+	text-align: center !important;
+}
+
+.card {
+	background-color: lightgrey;
+}
 
 .jumbotron.title {
 	background-color: blue;

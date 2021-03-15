@@ -1,9 +1,11 @@
 import React, { Component }  from 'react';
-import { Container, Jumbotron, Alert, Carousel } from 'react-bootstrap';
+import { Col, Row, Container, Card, Jumbotron, Alert } from 'react-bootstrap';
 import getEarthquakeData from './getData'
 import BarChart from './BarChart';
+import DisplayCard from './DisplayCard';
 
 import './App.css';
+
 
 class App extends Component {
   constructor(props) {
@@ -18,9 +20,8 @@ class App extends Component {
 		this.filterSpecialEventData = this.filterSpecialEventData.bind(this);
 		this.categorizeViaRichterScala = this.categorizeViaRichterScala.bind(this);
 		this.checkForUndefinedValues = this.checkForUndefinedValues.bind(this);
-		this.compareNumbers = this.compareNumbers.bind(this);
-
 	}
+
 	componentDidMount() {
 		getEarthquakeData()
     .then(response => this.setState({earthquakeData: response, loading: false})) 
@@ -43,13 +44,9 @@ class App extends Component {
 		}
 	}
 
-	compareNumbers(a, b) {
-	  return a - b;
-	}
-
 	filterSpecialEventData() {
-		// filters for mag, felt, special types and save them
-		let specialEvents = {};
+		// filters for mag, felt, special types for displaying them later on
+		let specialTypes = {};
 		let magnitudeEvents = {};
 		let magnitudeList = [];
 		let feltList = [];
@@ -57,10 +54,10 @@ class App extends Component {
 		this.state.earthquakeData.features.forEach(function(element) {
 			// add special events
 			let type = this.checkForUndefinedValues(element.properties.type, "type")
-			if (!specialEvents[type]) {
-				specialEvents[type] = [element] //TODO [] remove
+			if (!specialTypes[type]) {
+				specialTypes[type] = [element] //TODO [] remove
 			} else {
-				specialEvents[type].push(element)
+				specialTypes[type].push(element)
 			}
 
 			// add magnitude events to a dict for categorizing with richter magnitude scala later on
@@ -76,7 +73,6 @@ class App extends Component {
 
 			// add felt events into a list for sorting by magnitude later on
 			feltList.push(element)
-
 		}.bind(this))
 
 		let highestThreeMagnitudes = magnitudeList.sort(function(a, b) {
@@ -87,7 +83,7 @@ class App extends Component {
 			return a.properties.felt - b.properties.felt
 		}).slice(-3)
 
-		return {highestThreeMagnitudes, highestThreeFelts, specialEvents, magnitudeEvents}
+		return {highestThreeMagnitudes, highestThreeFelts, specialTypes, magnitudeEvents}
 	}
 
 	categorizeViaRichterScala(magnitudeEvents) {
@@ -102,12 +98,11 @@ class App extends Component {
 			7: {title: "Major", count: 0, magnitude: 7},
 			8: {title: "Great", count: 0, magnitude: 8},
 			9: {title: "Extreme", count: 0, magnitude: 9},
-			10: {title: "Global Catastrophe", count: 0, magnitude: 10}
+			10: {title: "Catastrophe", count: 0, magnitude: 10}
 		}
+
 		Object.keys(magnitudeEvents).forEach(function(magnitude) {
-			console.log(magnitude, "magnitudeEvents") 
 			let mag = this.checkForUndefinedValues(magnitude, "mag")
-			console.log(mag, "mag")
 			categorizedRichterScala[parseInt(mag)].count++
 		}.bind(this))
 		return Object.values(categorizedRichterScala)
@@ -117,11 +112,11 @@ class App extends Component {
 		if (!this.state.loading) {
 			// find a better place to put this
 			var earthquakeData = this.state.earthquakeData;
-			// get Data for last 3 earthquakes
+			// get data for last 3 earthquakes
 			var lastEarthquakes = this.getLastEarthquakes()
-			// get Data for the highest mag and highest felt
-			// var highestMagnitudeEarthquakes, highestFeltEarthquakes
+			// get data for the highest mag and highest felt
 			var specialEventData = this.filterSpecialEventData()
+			// get magnitude data categorized by richter scala
 			var categorizedRichterScala = this.categorizeViaRichterScala(specialEventData.magnitudeEvents)
 		}
   	return (
@@ -143,51 +138,83 @@ class App extends Component {
 			        	</Jumbotron> 
 			        	<Jumbotron className="last-earthquakes">
 					      	<h2>Last 3 Earthquakes</h2>
-					      	{lastEarthquakes.map(function(earthquake) {
-					      		let date = `${new Date(earthquake.properties.time).toLocaleDateString("en-US")} ${new Date(earthquake.properties.time).toLocaleTimeString("en-US")}`
-					      		return (
-						      		<div>Magnitude: {earthquake.properties.mag.toFixed(2)}, Felt: {earthquake.properties.felt ? earthquake.properties.felt : "Nothing"},
-						      		Where: {earthquake.properties.place}, Time: {date}, 
-						      		Type: {earthquake.properties.type}</div>)
-				      		})}
+					      	<Container>
+			        			<Row>
+							      	{lastEarthquakes.map(function(earthquakeElement) {
+							      		let earthquake = earthquakeElement.properties
+							      		let date = `${new Date(earthquake.time).toLocaleDateString("en-US")} ${new Date(earthquake.time).toLocaleTimeString("en-US")}`
+							      		return (
+							      			<DisplayCard 
+							      				mag={earthquake.mag.toFixed(2)}
+							      				felt={earthquake.felt ? earthquake.felt : "Nothing"}
+							      				place={earthquake.place}
+							      				date={date}
+							      				type={earthquake.type}
+							      			/>
+						      			)
+						      		})}
+					      		</Row>
+				        	</Container>
 			      		</Jumbotron> 
+			      		<Jumbotron className="bar-chart">
+					      	<h2>All Magnitudes last 24 hours</h2>
+				      		<BarChart
+									  data={categorizedRichterScala}
+									  title="Magnitudes categorized by Richter Magnitude Scala"
+									  color="#70CAD1"
+									  maxTicks={earthquakeData.metadata.count/3}
+									/>
+								</Jumbotron>
 			      		<Jumbotron className="heaviest-magnitude">
 					      	<h2>Heaviest 3 Earthquakes last 24 hours</h2>
-				      		{specialEventData.highestThreeMagnitudes.map(function(magnitude) {
-					      		let date = `${new Date(magnitude.properties.time).toLocaleDateString("en-US")} ${new Date(magnitude.properties.time).toLocaleTimeString("en-US")}`
-					      		return (
-						      		<div>Magnitude: {magnitude.properties.mag.toFixed(2)}, Felt: {magnitude.properties.felt ? magnitude.properties.felt : "Nothing"},
-						      		Where: {magnitude.properties.place}, Time: {date}, 
-						      		Type: {magnitude.properties.type}</div>)
-				      		})}
+					      	<Container>
+			        			<Row>
+							      	{specialEventData.highestThreeMagnitudes.map(function(magnitudeElement) {
+							      		let magnitude = magnitudeElement.properties
+							      		let date = `${new Date(magnitude.time).toLocaleDateString("en-US")} ${new Date(magnitude.time).toLocaleTimeString("en-US")}`
+							      		return (
+							      			<DisplayCard 
+							      				mag={magnitude.mag.toFixed(2)}
+							      				felt={magnitude.felt ? magnitude.felt : "Nothing"}
+							      				place={magnitude.place}
+							      				date={date}
+							      				type={magnitude.type}
+							      			/>
+						      			)
+						      		})}
+					      		</Row>
+				        	</Container>
 			      		</Jumbotron>
 			      		<Jumbotron className="heaviest-felt">
 					      	<h2>Most felt 3 Earthquakes last 24 hours</h2>
-				      		{specialEventData.highestThreeFelts.map(function(felt) {
-					      		let date = `${new Date(felt.properties.time).toLocaleDateString("en-US")} ${new Date(felt.properties.time).toLocaleTimeString("en-US")}`
-					      		return (
-						      		<div>Magnitude: {felt.properties.mag.toFixed(2)}, Felt: {felt.properties.felt},
-						      		Where: {felt.properties.place}, Time: {date}, 
-						      		Type: {felt.properties.type}</div>)
-				      		})}
+					      	<Container>
+			        			<Row>
+							      	{specialEventData.highestThreeFelts.map(function(feltElement) {
+						      			let felt = feltElement.properties
+							      		let date = `${new Date(felt.time).toLocaleDateString("en-US")} ${new Date(felt.time).toLocaleTimeString("en-US")}`
+							      		return (
+							      			<DisplayCard 
+							      				mag={felt.mag.toFixed(2)}
+							      				felt={felt.felt}
+							      				place={felt.place}
+							      				date={date}
+							      				type={felt.type}
+							      			/>
+						      			)
+						      		})}
+					      		</Row>
+				        	</Container>
 			      		</Jumbotron>
 			      		<Jumbotron className="special-events">
 					      	<h2>Something special going on today?</h2>
-				      		{Object.keys(specialEventData.specialEvents).map(function(specialEvent) {
-				      			let specialEvents = specialEventData.specialEvents
-				      			let count = specialEvents[specialEvent].length
+				      		{Object.keys(specialEventData.specialTypes).map(function(specialEvent) {
+				      			let specialTypes = specialEventData.specialTypes
+				      			let count = specialTypes[specialEvent].length
 				      			return (
 				      				<div>There have been {count} {specialEvent}s today.</div>
 				      			)
 				      		})}
 			      		</Jumbotron>
-			      		<Jumbotron className="bar-chart">
-				      		<BarChart
-									  data={categorizedRichterScala}
-									  title="My amazing data"
-									  color="#70CAD1"
-									/>
-								</Jumbotron>
 			      	</div>
 	        	}
 	      </div>
