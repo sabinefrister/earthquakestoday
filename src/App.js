@@ -1,5 +1,5 @@
 import React, { Component }  from 'react';
-import { Container, Alert, Carousel } from 'react-bootstrap';
+import { Container, Jumbotron, Alert, Carousel } from 'react-bootstrap';
 import getEarthquakeData from './getData'
 import BarChart from './BarChart';
 
@@ -17,6 +17,8 @@ class App extends Component {
 		this.getLastEarthquakes = this.getLastEarthquakes.bind(this);
 		this.filterSpecialEventData = this.filterSpecialEventData.bind(this);
 		this.categorizeViaRichterScala = this.categorizeViaRichterScala.bind(this);
+		this.checkForUndefinedValues = this.checkForUndefinedValues.bind(this);
+		this.compareNumbers = this.compareNumbers.bind(this);
 
 	}
 	componentDidMount() {
@@ -29,41 +31,62 @@ class App extends Component {
 		return this.state.earthquakeData.features.slice(-3);
 	}
 
+	checkForUndefinedValues(value, parameter) {
+		if (value) {
+			return value
+		} else if (parameter === "type") {
+			return "earthquake"
+		} else {
+			return 0
+		}
+	}
+
+	compareNumbers(a, b) {
+	  return a - b;
+	}
+
 	filterSpecialEventData() {
-		// look for mag, felt, special types and save them to a list
-		// special - all
-		// highest mag and felt only three highest -> save the mag and pop the last ones
+		// filters for mag, felt, special types and save them
 		let specialEvents = {};
 		let magnitudeEvents = {};
-		let feltEvents = {};
+		let magnitudeList = [];
+		let feltList = [];
+
 		this.state.earthquakeData.features.forEach(function(element) {
 			// add special events
-			if (!specialEvents[element.properties.type]) {
-				specialEvents[element.properties.type] = [element]
+			let type = this.checkForUndefinedValues(element.properties.type, "type")
+			if (!specialEvents[type]) {
+				specialEvents[type] = [element] //TODO [] remove
 			} else {
-				specialEvents[element.properties.type].push(element)
+				specialEvents[type].push(element)
 			}
 
-			// add magnitude events
-			if (!magnitudeEvents[element.properties.mag]) {
-				magnitudeEvents[element.properties.mag] = [element]
+			// add magnitude events to a dict for categorizing with richter magnitude scala
+			let mag = this.checkForUndefinedValues([element.properties.mag], "mag")
+			if (!magnitudeEvents[mag]) {
+				magnitudeEvents[mag] = [element]
 			} else {
-				magnitudeEvents[element.properties.mag].push(element)
+				magnitudeEvents[mag].push(element)
 			}
 
-			// add felt events
-			if (!feltEvents[element.properties.felt]) {
-				feltEvents[element.properties.felt] = [element]
-			} else {
-				feltEvents[element.properties.felt].push(element)
-			}
-		})
-		function compareNumbers(a, b) {
-		  return a - b;
-		}
-		let highestThreeMagnitudes = Object.keys(magnitudeEvents).sort(compareNumbers).slice(-3);
-		let highestThreeFelts = Object.keys(feltEvents).sort(compareNumbers).slice(-3);
-		return {highestThreeMagnitudes, highestThreeFelts, specialEvents, magnitudeEvents, feltEvents}
+			// add magniude events into a list for sorting by magnitude later on
+			magnitudeList.push(element)
+
+			// add felt events into a list for sorting by magnitude later on
+			let felt = this.checkForUndefinedValues([element.properties.felt], "felt")
+			feltList.push(element)
+
+		}.bind(this))
+
+		let highestThreeMagnitudes = magnitudeList.sort(function(a, b) {
+			return a.properties.mag - b.properties.mag
+		}).slice(-3)
+
+		let highestThreeFelts = feltList.sort(function(a, b) {
+			return a.properties.felt - b.properties.felt
+		}).slice(-3)
+
+		return {highestThreeMagnitudes, highestThreeFelts, specialEvents, magnitudeEvents}
 	}
 
 	categorizeViaRichterScala(magnitudeEvents) {
@@ -80,7 +103,6 @@ class App extends Component {
 			9: {title: "Extreme", count: 0, magnitude: 9},
 			10: {title: "Global Catastrophe", count: 0, magnitude: 10}
 		}
-
 		Object.keys(magnitudeEvents).forEach(function(magnitude) {
 			if (magnitude) {
 				categorizedRichterScala[parseInt(magnitude)].count++
@@ -105,58 +127,68 @@ class App extends Component {
 	    	<Alert variant="danger" show={this.state.showAlert}>
 			  	{this.state.alertMessage}
 		  	</Alert>
-	      <Container>
-	      	<h1>Earthquakes Today</h1>
-	      	{!this.state.loading &&
-	      		<div>
-			      	<h2>Total</h2>
-			        <p>There have been {earthquakeData.metadata.count} recognized earthquakes 
-			        for the last 24 hours.</p>
-			      	<h2>Last 3 Earthquakes</h2>
-			      	<div>
-				      	{lastEarthquakes.map(function(earthquake) {
-				      		let date = `${new Date(earthquake.properties.time).toLocaleDateString("en-US")} ${new Date(earthquake.properties.time).toLocaleTimeString("en-US")}`
-				      		return (
-					      		<div>Magnitude: {earthquake.properties.mag}, Felt: {earthquake.properties.felt ? earthquake.properties.felt : "nothing"},
-					      		Where: {earthquake.properties.place}, Time: {date}, 
-					      		Type: {earthquake.properties.type}</div>)
-			      		})}
-		      		</div>
-			      	<h2>Heaviest 3 Earthquakes last 24 hours</h2>
-			      		{specialEventData.highestThreeMagnitudes.map(function(magnitude) {
-			      			let magnitudeEvents = specialEventData.magnitudeEvents
-				      		let date = `${new Date(magnitudeEvents[magnitude][0].properties.time).toLocaleDateString("en-US")} ${new Date(magnitudeEvents[magnitude][0].properties.time).toLocaleTimeString("en-US")}`
-				      		return (
-					      		<div>Magnitude: {magnitudeEvents[magnitude][0].properties.mag}, Felt: {magnitudeEvents[magnitude][0].properties.felt ? magnitudeEvents[magnitude][0].properties.felt : "nothing"},
-					      		Where: {magnitudeEvents[magnitude][0].properties.place}, Time: {date}, 
-					      		Type: {magnitudeEvents[magnitude][0].properties.type}</div>)
-			      		})}
-			      	<h2>Most felt 3 Earthquakes last 24 hours</h2>
-			      		{specialEventData.highestThreeFelts.map(function(felt) {
-			      			let feltEvents = specialEventData.feltEvents
-				      		let date = `${new Date(feltEvents[felt][0].properties.time).toLocaleDateString("en-US")} ${new Date(feltEvents[felt][0].properties.time).toLocaleTimeString("en-US")}`
-				      		return (
-					      		<div>Magnitude: {feltEvents[felt][0].properties.mag}, Felt: {feltEvents[felt][0].properties.felt},
-					      		Where: {feltEvents[felt][0].properties.place}, Time: {date}, 
-					      		Type: {feltEvents[felt][0].properties.type}</div>)
-			      		})}
-			      	<h2>Something special going on today?</h2>
-			      		{Object.keys(specialEventData.specialEvents).map(function(specialEvent) {
-			      			let specialEvents = specialEventData.specialEvents
-			      			let count = specialEvents[specialEvent].length
-			      			return (
-			      				<div>There have been {count} {specialEvent}s today.</div>
-			      			)
-			      		})}
-		      		<BarChart
-							  data={categorizedRichterScala}
-							  title="My amazing data"
-							  color="#70CAD1"
-							/>
-		      	</div>
-        	}
-        	
-	      </Container>
+		  	<div className="main">
+		  		<Jumbotron className="title">
+		      	<h1>Earthquakes Today</h1>
+		      	<p>You will find some exciting data about earthquakes all over the world.</p>
+	      	</Jumbotron> 	
+		      	{!this.state.loading &&
+		      		<div>
+			      		<Jumbotron className="total">
+					      	<h2>Total</h2>
+					        <p>There have been {earthquakeData.metadata.count} recognized earthquakes 
+					        for the last 24 hours.</p>
+			        	</Jumbotron> 
+			        	<Jumbotron className="last-earthquakes">
+					      	<h2>Last 3 Earthquakes</h2>
+					      	{lastEarthquakes.map(function(earthquake) {
+					      		let date = `${new Date(earthquake.properties.time).toLocaleDateString("en-US")} ${new Date(earthquake.properties.time).toLocaleTimeString("en-US")}`
+					      		return (
+						      		<div>Magnitude: {earthquake.properties.mag.toFixed(2)}, Felt: {earthquake.properties.felt ? earthquake.properties.felt : "Nothing"},
+						      		Where: {earthquake.properties.place}, Time: {date}, 
+						      		Type: {earthquake.properties.type}</div>)
+				      		})}
+			      		</Jumbotron> 
+			      		<Jumbotron className="heaviest-magnitude">
+					      	<h2>Heaviest 3 Earthquakes last 24 hours</h2>
+				      		{specialEventData.highestThreeMagnitudes.map(function(magnitude) {
+					      		let date = `${new Date(magnitude.properties.time).toLocaleDateString("en-US")} ${new Date(magnitude.properties.time).toLocaleTimeString("en-US")}`
+					      		return (
+						      		<div>Magnitude: {magnitude.properties.mag.toFixed(2)}, Felt: {magnitude.properties.felt ? magnitude.properties.felt : "Nothing"},
+						      		Where: {magnitude.properties.place}, Time: {date}, 
+						      		Type: {magnitude.properties.type}</div>)
+				      		})}
+			      		</Jumbotron>
+			      		<Jumbotron className="heaviest-felt">
+					      	<h2>Most felt 3 Earthquakes last 24 hours</h2>
+				      		{specialEventData.highestThreeFelts.map(function(felt) {
+					      		let date = `${new Date(felt.properties.time).toLocaleDateString("en-US")} ${new Date(felt.properties.time).toLocaleTimeString("en-US")}`
+					      		return (
+						      		<div>Magnitude: {felt.properties.mag.toFixed(2)}, Felt: {felt.properties.felt},
+						      		Where: {felt.properties.place}, Time: {date}, 
+						      		Type: {felt.properties.type}</div>)
+				      		})}
+			      		</Jumbotron>
+			      		<Jumbotron className="special-events">
+					      	<h2>Something special going on today?</h2>
+				      		{Object.keys(specialEventData.specialEvents).map(function(specialEvent) {
+				      			let specialEvents = specialEventData.specialEvents
+				      			let count = specialEvents[specialEvent].length
+				      			return (
+				      				<div>There have been {count} {specialEvent}s today.</div>
+				      			)
+				      		})}
+			      		</Jumbotron>
+			      		<Jumbotron className="bar-chart">
+				      		<BarChart
+									  data={categorizedRichterScala}
+									  title="My amazing data"
+									  color="#70CAD1"
+									/>
+								</Jumbotron>
+			      	</div>
+	        	}
+	      </div>
 	    </div>
 	  );
 	}

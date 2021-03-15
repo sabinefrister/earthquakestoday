@@ -1,4 +1,4 @@
-import React, { Component }  from 'react';
+import React from 'react';
 import Chart from 'chart.js';
 
 
@@ -15,7 +15,6 @@ class BarChart extends React.Component {
   }
 
   componentDidMount() {
-    console.log(this.props.data)
     this.myChart = new Chart(this.canvasRef.current, {
       type: 'bar',
       options: {
