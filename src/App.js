@@ -32,7 +32,9 @@ class App extends Component {
 	}
 
 	checkForUndefinedValues(value, parameter) {
-		if (value) {
+		if (parameter === "mag" && value <= -1) {
+			return 0
+		} else if (value) {
 			return value
 		} else if (parameter === "type") {
 			return "earthquake"
@@ -61,7 +63,7 @@ class App extends Component {
 				specialEvents[type].push(element)
 			}
 
-			// add magnitude events to a dict for categorizing with richter magnitude scala
+			// add magnitude events to a dict for categorizing with richter magnitude scala later on
 			let mag = this.checkForUndefinedValues([element.properties.mag], "mag")
 			if (!magnitudeEvents[mag]) {
 				magnitudeEvents[mag] = [element]
@@ -69,11 +71,10 @@ class App extends Component {
 				magnitudeEvents[mag].push(element)
 			}
 
-			// add magniude events into a list for sorting by magnitude later on
+			// add magnitude events into a list for sorting by magnitude later on
 			magnitudeList.push(element)
 
 			// add felt events into a list for sorting by magnitude later on
-			let felt = this.checkForUndefinedValues([element.properties.felt], "felt")
 			feltList.push(element)
 
 		}.bind(this))
@@ -104,10 +105,11 @@ class App extends Component {
 			10: {title: "Global Catastrophe", count: 0, magnitude: 10}
 		}
 		Object.keys(magnitudeEvents).forEach(function(magnitude) {
-			if (magnitude) {
-				categorizedRichterScala[parseInt(magnitude)].count++
-			}
-		})
+			console.log(magnitude, "magnitudeEvents") 
+			let mag = this.checkForUndefinedValues(magnitude, "mag")
+			console.log(mag, "mag")
+			categorizedRichterScala[parseInt(mag)].count++
+		}.bind(this))
 		return Object.values(categorizedRichterScala)
 	}
 
