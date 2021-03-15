@@ -2,3 +2,38 @@
 	background-color: black !important;
 	color: white;
 }*/
+
+.jumbotron.title {
+	background-color: blue;
+	border-radius: 0;
+}
+
+.jumbotron.total {
+	background-color: yellow;
+	border-radius: 0;
+}
+
+.jumbotron.last-earthquakes {
+	background-color: green;
+	border-radius: 0;
+}
+
+.jumbotron.heaviest-magnitude {
+	background-color: darkblue;
+	border-radius: 0;
+}
+
+.jumbotron.heaviest-felt {
+	background-color: pink;
+	border-radius: 0;
+}
+
+.jumbotron.special-events {
+	background-color: orange;
+	border-radius: 0;
+}
+
+.jumbotron.bar-chart {
+	background-color: red;
+	border-radius: 0;
+}
