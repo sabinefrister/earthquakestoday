@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Chart from 'chart.js';
 
 
@@ -49,3 +50,10 @@ class BarChart extends React.Component {
 }
 
 export default BarChart;
+
+BarChart.propTypes = {
+  data: PropTypes.array.isRequired,
+  color: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  maxTicks: PropTypes.number.isRequired
+};

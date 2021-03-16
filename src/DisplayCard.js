@@ -1,30 +1,31 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Col, Card } from 'react-bootstrap';
 
 
 
-class BarChart extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+const DisplayCard = (props) => (
+  <Col lg={4}>
+    <Card>
+      <Card.Body>
+        <Card.Text>
+          <p>Magnitude: {props.mag}</p>
+          <p>Felt: {props.felt}</p>
+          <p>Place: {props.place}</p>
+          <p>Date: {props.date}</p>
+          <p>Type: {props.type}</p>
+        </Card.Text>
+      </Card.Body>
+    </Card>
+  </Col>
+);
 
-  render() {
-    return (
-      <Col lg={4}>
-        <Card>
-          <Card.Body>
-            <Card.Text>
-              <p>Magnitude: {this.props.mag}</p>
-              <p>Felt: {this.props.felt}</p>
-              <p>Place: {this.props.place}</p>
-              <p>Date: {this.props.date}</p>
-              <p>Type: {this.props.type}</p>
-            </Card.Text>
-          </Card.Body>
-        </Card>
-      </Col>
-    );
-  }
-}
+export default DisplayCard;
 
-export default BarChart;
+DisplayCard.propTypes = {
+  mag: PropTypes.string.isRequired,
+  felt: PropTypes.string.isRequired,
+  place: PropTypes.string.isRequired,
+  date: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired
+};

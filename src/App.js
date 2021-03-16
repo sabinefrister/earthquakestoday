@@ -148,7 +148,8 @@ class App extends Component {
 					      	<h2>Total</h2>
 					        <p>There have been <b>{earthquakeData.metadata.count}</b> recognized earthquakes 
 					        for the last 24 hours. Data is provided by <a 
-					       	href="https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php">www.usgs.gov</a>.</p>
+					       	href="https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php">
+					       	www.usgs.gov</a>.</p>
 					       	<p>It has been updated at {this.state.latestRefreshDate}</p>
 			        	</Jumbotron> 
 			        	<Jumbotron className="last-earthquakes">
