@@ -1,5 +1,5 @@
 import React, { Component }  from 'react';
-import { Col, Row, Container, Card, Jumbotron, Alert } from 'react-bootstrap';
+import { Row, Container, Jumbotron, Alert } from 'react-bootstrap';
 import getEarthquakeData from './getData'
 import BarChart from './BarChart';
 import DisplayCard from './DisplayCard';
@@ -26,8 +26,6 @@ class App extends Component {
 
 	getData() {
 		let latestRefreshDate = new Date().toUTCString()
-
-		console.log(latestRefreshDate)
 		getEarthquakeData()
     .then(response => this.setState({earthquakeData: response, loading: false, 
     	latestRefreshDate: latestRefreshDate})) 
@@ -156,16 +154,19 @@ class App extends Component {
 					      	<h2>Last 3 Earthquakes</h2>
 					      	<Container>
 			        			<Row>
-							      	{lastEarthquakes.map(function(earthquakeElement) {
+							      	{lastEarthquakes.map(function(earthquakeElement, index) {
 							      		let earthquake = earthquakeElement.properties;
 							      		let date = new Date(earthquake.time).toUTCString();
 							      		return (
 							      			<DisplayCard 
+							      				key={`display_card_last_${index}`}
 							      				mag={earthquake.mag.toFixed(2)}
 							      				felt={earthquake.felt ? earthquake.felt : "Nothing"}
 							      				place={earthquake.place}
 							      				date={date}
 							      				type={earthquake.type}
+							      				id={index}
+							      				description="last"
 							      			/>
 						      			)
 						      		})}
@@ -185,16 +186,19 @@ class App extends Component {
 					      	<h2>Heaviest 3 Earthquakes last 24 hours</h2>
 					      	<Container>
 			        			<Row>
-							      	{specialEventData.highestThreeMagnitudes.map(function(magnitudeElement) {
+							      	{specialEventData.highestThreeMagnitudes.map(function(magnitudeElement, index) {
 							      		let magnitude = magnitudeElement.properties;
 							      		let date = new Date(magnitude.time).toUTCString();
 							      		return (
 							      			<DisplayCard 
+							      				key={`display_card_mag_${index}`}
 							      				mag={magnitude.mag.toFixed(2)}
 							      				felt={magnitude.felt ? magnitude.felt : "Nothing"}
 							      				place={magnitude.place}
 							      				date={date}
 							      				type={magnitude.type}
+							      				id={index}
+							      				description="mag"
 							      			/>
 						      			)
 						      		})}
@@ -205,16 +209,19 @@ class App extends Component {
 					      	<h2>Most felt 3 Earthquakes last 24 hours</h2>
 					      	<Container>
 			        			<Row>
-							      	{specialEventData.highestThreeFelts.map(function(feltElement) {
+							      	{specialEventData.highestThreeFelts.map(function(feltElement, index) {
 						      			let felt = feltElement.properties;
 							      		let date = new Date(felt.time).toUTCString();
 							      		return (
 							      			<DisplayCard 
+							      				key={`display_card_felt_${index}`}
 							      				mag={felt.mag.toFixed(2)}
 							      				felt={felt.felt}
 							      				place={felt.place}
 							      				date={date}
 							      				type={felt.type}
+							      				id={index}
+							      				description="felt"
 							      			/>
 						      			)
 						      		})}
@@ -223,11 +230,13 @@ class App extends Component {
 			      		</Jumbotron>
 			      		<Jumbotron className="special-events">
 					      	<h2>Something special going on today?</h2>
-				      		{Object.keys(specialEventData.specialTypes).map(function(specialEvent) {
+				      		{Object.keys(specialEventData.specialTypes).map(function(specialEvent, index) {
 				      			let specialTypes = specialEventData.specialTypes
 				      			let count = specialTypes[specialEvent].length
 				      			return (
-				      				<div>There have been <b>{count}</b> {specialEvent}s today.</div>
+				      				<div key={`special_type_div_${index}`}>
+				      					There have been <b key={`special_type_b_${index}`}>{count}</b> {specialEvent}s today.
+			      					</div>
 				      			)
 				      		})}
 			      		</Jumbotron>

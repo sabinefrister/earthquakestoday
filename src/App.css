@@ -2,14 +2,14 @@ body {
 	text-align: center !important;
 }
 
-.card {
-	background-color: #dee2e6 !important;
+div > .card {
+	background-color: #dee2e6;
 	border: 1px solid #495057;
-	margin-top: 2rem !important;
+	margin-top: 2rem;
 }
-.jumbotron {
-	border-radius: 0 !important;
-	margin-bottom: 0 !important;
+div > .jumbotron {
+	border-radius: 0;
+	margin-bottom: 0;
 }
 
 .jumbotron.title {

@@ -8,7 +8,7 @@ describe('DisplayCard', () => {
 
 	beforeEach(() => {
     const mag = "2.1"
-    const felt = "400"
+    const felt = 400
     const place = "SW from CA"
     const date = "June 30 2020"
     const type = "earthquake"
@@ -26,7 +26,7 @@ describe('DisplayCard', () => {
 
   test('renders BarChart component with all necessary props', () => {
     expect(wrapper.instance().props.mag).toEqual("2.1");
-    expect(wrapper.instance().props.felt).toEqual("400");
+    expect(wrapper.instance().props.felt).toEqual(400);
     expect(wrapper.instance().props.place).toEqual("SW from CA");
     expect(wrapper.instance().props.data).toEqual("June 30 2020");
     expect(wrapper.instance().props.type).toEqual("earthquake");
