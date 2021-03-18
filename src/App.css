@@ -16,7 +16,7 @@ div > .jumbotron {
 	background-color: #52b69a;
 }
 
-.jumbotron.total {
+.jumbotron.total, .jumbotron.spinner {
 	background-color: #e9ecef;
 }
 

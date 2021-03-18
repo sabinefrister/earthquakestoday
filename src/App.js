@@ -1,5 +1,5 @@
 import React, { Component }  from 'react';
-import { Row, Container, Jumbotron, Alert } from 'react-bootstrap';
+import { Row, Container, Jumbotron, Spinner, Alert } from 'react-bootstrap';
 import getEarthquakeData from './getData'
 import BarChart from './BarChart';
 import DisplayCard from './DisplayCard';
@@ -139,9 +139,16 @@ class App extends Component {
 		  		<Jumbotron className="title">
 		      	<h1>Earthquakes Today</h1>
 		      	<p>You will find some exciting data about earthquakes all over the world.</p>
-	      	</Jumbotron> 	
+	      	</Jumbotron> 
+	      		{this.state.loading &&
+	      			<Jumbotron className="spinner">
+	      				<Spinner animation="border" role="status">
+								  <span className="sr-only">Loading...</span>
+								</Spinner>
+	      			</Jumbotron>
+	      		}	
 		      	{!this.state.loading &&
-		      		<div>
+		      		<React.Fragment>
 			      		<Jumbotron className="total">
 					      	<h2>Total</h2>
 					        <p>There have been <b>{earthquakeData.metadata.count}</b> recognized earthquakes 
@@ -178,7 +185,7 @@ class App extends Component {
 				      		<BarChart
 									  data={categorizedRichterScala}
 									  title="Magnitudes categorized by Richter Magnitude Scala"
-									  color="#70CAD1"
+									  color="#34a0a4"
 									  maxTicks={earthquakeData.metadata.count/3}
 									/>
 								</Jumbotron>
@@ -206,7 +213,7 @@ class App extends Component {
 				        	</Container>
 			      		</Jumbotron>
 			      		<Jumbotron className="heaviest-felt">
-					      	<h2>Most felt 3 Earthquakes last 24 hours</h2>
+					      	<h2>Most felt 3 Earthquakes by persons last 24 hours</h2>
 					      	<Container>
 			        			<Row>
 							      	{specialEventData.highestThreeFelts.map(function(feltElement, index) {
@@ -240,7 +247,7 @@ class App extends Component {
 				      			)
 				      		})}
 			      		</Jumbotron>
-			      	</div>
+			      	</React.Fragment>
 	        	}
 	      </div>
 	    </div>

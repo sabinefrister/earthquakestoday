@@ -9,22 +9,24 @@ describe('BarChart', () => {
 	let wrapper;
 
 	beforeEach(() => {
-    const data = [
-      {
-        count: 33,
-        magnitude: 0,
-        title: "Micro"
-      }, 
-      {
-        count: 51,
-        magnitude: 1,
-        title: "Micro"
-      }, 
-    ]
-    const color = "#FFFFFF"
-    const title = "Title of the diagram"
-    const maxTicks = 80
-	  wrapper = shallow(<BarChart data={data} color={color} maxTicks={maxTicks} title={title}/>);
+    const initialProps = {
+      data: [
+        {
+          count: 33,
+          magnitude: 0,
+          title: "Micro"
+        }, 
+        {
+          count: 51,
+          magnitude: 1,
+          title: "Micro"
+        }, 
+      ],
+      color: "#FFFFFF",
+      title: "Title of the diagram",
+      maxTicks: 80,
+    }
+	  wrapper = shallow(<BarChart {...initialProps} />);
 	});
 
   test('renders BarChart component with all elements', () => {
