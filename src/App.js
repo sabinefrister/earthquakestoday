@@ -29,7 +29,7 @@ class App extends Component {
 		getEarthquakeData()
     .then(response => this.setState({earthquakeData: response, loading: false, 
     	latestRefreshDate: latestRefreshDate})) 
-    .catch(error => this.setState({showAlert: true, alertMessage: error}))
+    .catch(error => this.setState({showAlert: true, alertMessage: `${error}`}))
 	}
 
 	componentDidMount() {
