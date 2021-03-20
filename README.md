@@ -26,9 +26,9 @@ But maybe there is a way around it.
 
 ## Deployment
 On Heroku CLI
-- “heroku login”
-- heroku create earthquakestoday
-- git push heroku main
-- heroku open
+- ```heroku login```
+- ```heroku create earthquakestoday```
+- ```git push heroku main```
+- ```heroku open```
 
 https://earthquakestoday.herokuapp.com/
