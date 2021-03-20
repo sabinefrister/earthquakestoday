@@ -1,70 +1,34 @@
-# Getting Started with Create React App
+# Notes about: Challenge Nr. 1
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## What I did
+I analyzed which data is in the json file, then brainstorm which data could be interesting and what features can show my abilities. 
+I decided against a map and points because it seemed too time intensive. 
+My decided technologies: JavaScript, React, Create React App, Chart.js, React Bootstrap, Fetch JSONP, GitHub, Heroku, FontAwesome, Tests with Jest and Enzyme.
 
-## Available Scripts
+I didn’t recognized the technology jsonp, so I struggled a bit with CORS and a proxy. After a while I decided to use a backend and I set it up. Then I recognized the jsonp thing and researched it. I found a library called fetch-jsonp and used it to access the data.
+After accessing the data correctly I filtered the data by several parameters like magnitude, felt, last events, total count and special types. And I displayed it roughly.
+Then I wanted to show how many events have been taking place categorized by the magnitude size with the richter magnitude scala. I used a bar chart with Change.js.
+I added a few styles, colors and Boostrap components to apply a simple layout.
+Finally I added some test by example, because my time is running out. If you’d like to see more test written by me, check my projects: https://github.com/sabinefrister/browsermediarecorder and https://github.com/sabinefrister/soundrecorder 
 
-In the project directory, you can run:
+## Next Steps could be
+- Add pictures at least for the title
+- Prettify the “Where” (Location) of the event in an standardized way. Instead of “22 km SSW of Mammoth, Wyoming” something like “Near Mammoth, Wyoming, USA” and differentiate between places in USA and countries all around the world.
+- More features could be
+    - collect data by states of USA and show a diagram how many events in every state
+    - collect data by countries or continents and show a diagram how many events in every country/ on every continent
+- Add more user actions, at least with a carousel element for the “Something special going on today?” section
+    - Eg. picture of vulcano erruption and text “No vulcano erruption today. What a relief :-)” and the same for other potential events like “nuclear explosion”, “meteorite”… 
+    - This section could be a little funny
+- Add more tests of course
+- When the jsonp request timed out, an error will be shown in an alert component from react bootstrap and in the console of the browser, there is a warning about "findDOMNode is deprecated in StrictMode". This is a known problem with the react bootstrap library. https://github.com/react-bootstrap/react-bootstrap/issues/5075
+But maybe there is a way around it.
 
-### `npm start`
+## Deployment
+On Heroku CLI
+- “heroku login”
+- heroku create earthquakestoday
+- git push heroku main
+- heroku open
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+https://earthquakestoday.herokuapp.com/
