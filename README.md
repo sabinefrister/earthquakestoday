@@ -12,17 +12,21 @@ I added a few styles, colors and Boostrap components to apply a simple layout.
 Finally I added some test by example, because my time is running out. If you’d like to see more test written by me, check my projects: https://github.com/sabinefrister/browsermediarecorder and https://github.com/sabinefrister/soundrecorder 
 
 ## Next Steps could be
-- Add pictures at least for the title
-- Prettify the “Where” (Location) of the event in an standardized way. Instead of “22 km SSW of Mammoth, Wyoming” something like “Near Mammoth, Wyoming, USA” and differentiate between places in USA and countries all around the world.
+- Add more tests of course
+- Add pictures at least for the title, additionally to every "card" at the top
+- Prettify data: 
+    - Show the “Where” (Location) of the event in an standardized way. Instead of “22 km SSW of Mammoth, Wyoming” something like “Near Mammoth, Wyoming, USA” or just "Whyoming, USA" and differentiate between places in USA and countries all around the world.
+    - Capitalize first letters of earthquake for example in "What kind of?"
 - More features could be
     - collect data by states of USA and show a diagram how many events in every state
     - collect data by countries or continents and show a diagram how many events in every country/ on every continent
 - Add more user actions, at least with a carousel element for the “Something special going on today?” section
     - Eg. picture of vulcano erruption and text “No vulcano erruption today. What a relief :-)” and the same for other potential events like “nuclear explosion”, “meteorite”… 
     - This section could be a little funny
-- Add more tests of course
-- When the jsonp request timed out, an error will be shown in an alert component from react bootstrap and in the console of the browser, there is a warning about "findDOMNode is deprecated in StrictMode". This is a known problem with the react bootstrap library. https://github.com/react-bootstrap/react-bootstrap/issues/5075
-But maybe there is a way around it.
+- Refactor a little bit
+    - eg. Sections with Display card could be a component by itself. I didn't do it because of the data flow from parent to children
+- Solve Problem
+    - When the jsonp request timed out, an error will be shown in an alert component from react bootstrap and in the console of the browser, there is a warning about "findDOMNode is deprecated in StrictMode". This is a known problem with the react bootstrap library. https://github.com/react-bootstrap/react-bootstrap/issues/5075 But maybe there is a way around it.
 
 ## Deployment
 On Heroku CLI
