@@ -3,7 +3,6 @@ import { Row, Container, Jumbotron, Spinner, Alert } from 'react-bootstrap';
 import getEarthquakeData from './getData'
 import BarChart from './BarChart';
 import DisplayCard from './DisplayCard';
-
 import './App.css';
 
 
@@ -44,10 +43,12 @@ class App extends Component {
 	}
 
 	checkForUndefinedValues(value, parameter) {
+		// the mag values can be -1 and then the richter scala didn't work properly
 		if (parameter === "mag" && value <= -1) {
 			return 0
 		} else if (value) {
 			return value
+		// if there is no value add earthquake if the parameter is type	
 		} else if (parameter === "type") {
 			return "earthquake"
 		} else {
@@ -56,17 +57,17 @@ class App extends Component {
 	}
 
 	filterSpecialEventData() {
-		// filters for mag, felt, special types for displaying them later on
+		// filters for mag, felt and special types for displaying them later on
 		let specialTypes = {};
 		let magnitudeEvents = {};
-		let magnitudeList = [];
-		let feltList = [];
+		let elementList = [];
 
+		// go through the event/features data and add data to the different list or dictionaries
 		this.state.earthquakeData.features.forEach(function(element) {
 			// add special events
 			let type = this.checkForUndefinedValues(element.properties.type, "type")
 			if (!specialTypes[type]) {
-				specialTypes[type] = [element] //TODO [] remove
+				specialTypes[type] = [element]
 			} else {
 				specialTypes[type].push(element)
 			}
@@ -79,18 +80,15 @@ class App extends Component {
 				magnitudeEvents[mag].push(element)
 			}
 
-			// add magnitude events into a list for sorting by magnitude later on
-			magnitudeList.push(element)
-
-			// add felt events into a list for sorting by magnitude later on
-			feltList.push(element)
+			// add all events into a list for sorting by magnitude or felt later on
+			elementList.push(element)
 		}.bind(this))
 
-		let highestThreeMagnitudes = magnitudeList.sort(function(a, b) {
+		let highestThreeMagnitudes = elementList.sort(function(a, b) {
 			return a.properties.mag - b.properties.mag
 		}).slice(-3)
 
-		let highestThreeFelts = feltList.sort(function(a, b) {
+		let highestThreeFelts = elementList.sort(function(a, b) {
 			return a.properties.felt - b.properties.felt
 		}).slice(-3)
 
@@ -112,6 +110,7 @@ class App extends Component {
 			10: {title: "Catastrophe", count: 0, magnitude: 10}
 		}
 
+		// Match magnitudeEvent keys which are numbers to the richter scala dict
 		Object.keys(magnitudeEvents).forEach(function(magnitude) {
 			let mag = this.checkForUndefinedValues(magnitude, "mag")
 			categorizedRichterScala[parseInt(mag)].count++
@@ -121,7 +120,6 @@ class App extends Component {
 
 	render() {
 		if (!this.state.loading) {
-			// find a better place to put this
 			var earthquakeData = this.state.earthquakeData;
 			// get data for last 3 earthquakes
 			var lastEarthquakes = this.getLastEarthquakes()
@@ -130,6 +128,7 @@ class App extends Component {
 			// get magnitude data categorized by richter scala
 			var categorizedRichterScala = this.categorizeViaRichterScala(specialEventData.magnitudeEvents)
 		}
+		
   	return (
 	    <div className="App">
 	    	<Alert variant="danger" show={this.state.showAlert}>

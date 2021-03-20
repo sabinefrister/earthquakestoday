@@ -58,7 +58,6 @@ describe('App', () => {
   		]
   	}
   	wrapper.setState({ loading: false, earthquakeData: data });
-  	console.log(wrapper.debug()) 
   	expect(wrapper.find('Spinner').length).toBe(0)
   	expect(wrapper.find('.title').length).toBe(1); 
     expect(wrapper.find('.special-events div').length).toBe(3)
@@ -72,4 +71,3 @@ describe('App', () => {
     expect(wrapper.find('Alert').props().show).toBe(true)
   })
 });
-

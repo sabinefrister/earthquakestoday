@@ -2,8 +2,8 @@ import React from 'react';
 import { shallow, mount } from 'enzyme';
 import BarChart from '../BarChart';
 
-jest.mock("chart.js")
 
+jest.mock("chart.js")
 
 describe('BarChart', () => {
 	let wrapper;
@@ -52,4 +52,3 @@ describe('BarChart', () => {
     expect(wrapper.instance().props.maxTicks).toEqual(80);
   })
 });
-

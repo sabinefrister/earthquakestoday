@@ -28,4 +28,3 @@ describe('DisplayCard', () => {
     expect(wrapper.find('Card').length).toBe(1);
   })
 });
-
