@@ -1,18 +1,16 @@
-# Notes abouts Challenge Nr. 1
+# Notes about Code Challenge
 
 ## What I did
-I analyzed which data is in the json file, then brainstorm which data could be interesting and what features could show my abilities. 
+I analyzed which data is in the json file of earthquakes, then brainstorm which data could be interesting and what features could show my abilities. 
 I decided against a map and points, because it seemed too time intensive. 
 My used technologies: JavaScript, React, Create React App, Chart.js, React Bootstrap, Fetch JSONP, GitHub, Heroku, FontAwesome, Tests with Jest and Enzyme and the image from pixabay.com.
 
-I didn’t recognized the technology jsonp, so I struggled a bit with CORS and a proxy. After a while I decided to use a backend and set it up. Then I recognized the jsonp thing and researched it. I found a library called fetch-jsonp and used it to access the data.
-
-After accessing the data correctly I filtered the data by several parameters like magnitude, felt, last events, total count and special types. And I displayed it roughly.
+After accessing the data I filtered the data by several parameters like magnitude, felt, last events, total count and special types and I displayed it roughly.
 Then I wanted to show how many events have been taking place categorized by the magnitude size with the richter magnitude scala. I used a bar chart with Change.js.
 
 I added a few styles, colors, an image and Boostrap components to apply a simple layout.
 
-Finally I added some test by example, because my time was running out. If you’d like to see more test written by me, check my projects: https://github.com/sabinefrister/browsermediarecorder and https://github.com/sabinefrister/soundrecorder 
+Finally I added some tests by example, because my time was running out. If you’d like to see more test written by me, check my projects: https://github.com/sabinefrister/browsermediarecorder and https://github.com/sabinefrister/soundrecorder 
 
 ## Next dteps could be
 - Add more tests of course
